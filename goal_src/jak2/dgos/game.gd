@@ -465,6 +465,10 @@
   "elec-gate.o"
   "cty-guard-turret-button.o"
   "entity-debug.o" ;; added
+  "mech-h.o"
+  "mech.o"
+  "ruins-obs.o"
+  "nest-obs.o"
   "fodder.o"
   "fodder-custom.o"
   "fodder-ag.go"

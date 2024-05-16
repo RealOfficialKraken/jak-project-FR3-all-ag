@@ -293,6 +293,16 @@ void extract_common(const ObjectFileDB& db,
   add_all_textures_from_level(tfrag_level, "ARTSPOOL", tex_db);
   extract_art_groups_from_level(db, tex_db, {}, "ARTSPOOL", tfrag_level, art_group_data);
 
+  extract_single_ag("RUI.DGO", "fodder-ag", db, tex_db, tfrag_level);
+  extract_single_ag("RUI.DGO", "grenadier-ag", db, tex_db, tfrag_level);
+  extract_single_ag("RUI.DGO", "amphibian-ag", db, tex_db, tfrag_level);
+  extract_single_ag("RUI.DGO", "rapid-gunner-ag", db, tex_db, tfrag_level);
+  extract_single_ag("RUI.DGO", "grunt-ag", db, tex_db, tfrag_level);
+  extract_single_ag("NES.DGO", "mammoth-ag", db, tex_db, tfrag_level);
+  extract_single_ag("NES.DGO", "flying-spider-ag", db, tex_db, tfrag_level);
+  extract_single_ag("NES.DGO", "mantis-ag", db, tex_db, tfrag_level);
+  extract_single_ag("NES.DGO", "mammoth-ag", db, tex_db, tfrag_level);
+
   std::set<std::string> textures_we_have;
 
   // put _all_ index textures in common.
