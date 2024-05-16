@@ -68,7 +68,7 @@
   )
 
 
-(deftype grenadier (nav-enemy)
+(deftype grenadier-custom (nav-enemy)
   ((shot-trajectory            trajectory  :inline)
    (hostile-path               path-control)
    (bank                       bank-info   :inline)
@@ -287,7 +287,7 @@
 
 (set! (-> *grenadier-nav-enemy-info* fact-defaults) *fact-info-enemy-defaults*)
 
-(defmethod general-event-handler ((this grenadier) (arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
+(defmethod general-event-handler ((this grenadier-custom) (arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
   "Handles various events for the enemy
 @TODO - unsure if there is a pattern for the events and this should have a more specific name"
   (case arg2
@@ -1314,31 +1314,3 @@
   )
 
 
-(defbehavior grenadier-init-by-other grenadier ((vec vector))
-  (init-enemy-collision! self)
-  (logior! (-> self mask) (process-mask actor-pause))
-  (vector-copy! (-> self root trans) vec)
-  (quaternion-identity! (-> self root quat))
-  (vector-identity! (-> self root scale))
-  (init-enemy! self)
-  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
-        ;; verts for the path
-        (cverts (new 'static 'inline-array vector 3
-                (static-vectorm 1 0 0)
-                (static-vectorm 0 1 0)
-                (static-vectorm 0 0 1)
-                )
-          )
-        )
-    ;; if a nav mesh is close by, use that, otherwise use default
-    (if nav
-      (change-to nav self)
-      (change-to *default-nav-mesh* self)
-      )
-    ;; allocate path
-    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
-    (set! (-> self path curve cverts) cverts)
-    (set! (-> self path curve num-cverts) 3)
-    )
-  (go-idle self)
-  )

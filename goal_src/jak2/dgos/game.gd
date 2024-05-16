@@ -465,4 +465,13 @@
   "elec-gate.o"
   "cty-guard-turret-button.o"
   "entity-debug.o" ;; added
+  "fodder.o"
+  "fodder-custom.o"
+  "fodder-ag.go"
+  "mammoth.o"
+  "mammoth-custom.o"
+  "mammoth-ag.go"
+  "grenadier.o"
+  "grenadier-ag.go"
+  "mod-custom-code.o"
  ))

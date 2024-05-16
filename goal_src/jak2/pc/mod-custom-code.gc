@@ -1,0 +1,40 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: mod-custom-code.gc
+;; name in dgo: mod-custom-code
+;; dgos: ENGINE, GAME
+
+
+
+
+ (defun get-nav-control ((arg0 process-drawable) (arg1 nav-mesh))
+  (if (not arg1)
+      (set! arg1 (nav-mesh-from-res-tag (-> arg0 entity) 'nav-mesh-actor 0))
+      )
+  (when (not arg1)
+    (if (-> arg0 entity)
+        (logior! (-> arg0 entity extra perm status) (entity-perm-status error))
+        )
+    ;; terrible hack
+    (declare-type arg0 process-focusable)
+    (when (or 
+    (type? arg0 mammoth-custom)
+    (type? arg0 fodder-custom)
+    (type? arg0 grenadier)
+    )
+      (add-process-drawable-to-navmesh *default-nav-mesh* arg0 #t)
+      (return 0)
+      )
+    (go process-drawable-art-error "no nav-mesh")
+    (return 0)
+    )
+  (add-process-drawable-to-navmesh arg1 arg0 #t)
+  (none)
+  )
+
+
+(defun runs-every-frame ()
+
+(none)
+)
