@@ -33,8 +33,41 @@
   (none)
   )
 
+(define in-game? #f)
+(define cdr 0)
+(define-extern spawnslot int)
+(define-extern spawncap int)
 
 (defun runs-every-frame ()
+
+(when 
+(and 
+(= in-game? #t) 
+(>= cdr 1)
+(= in-game? #t)
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+)
+    (-! cdr 1)
+)
+
+(when 
+(and 
+(= in-game? #t)
+(= cdr 0)
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+(<= spawnslot spawncap)
+)
+    (when (rand-vu-percent? 0.03)
+        (spawn-process-entity)
+        (set! cdr 20)
+    )
+)
 
 (none)
 )

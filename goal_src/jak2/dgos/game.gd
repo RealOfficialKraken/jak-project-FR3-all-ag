@@ -464,7 +464,7 @@
   "battle.o"
   "elec-gate.o"
   "cty-guard-turret-button.o"
-  "entity-debug.o" ;; added
+  "entity-debug.o" ;; added, and down, too vv
   "mech-h.o"
   "mech.o"
   "ruins-obs.o"
@@ -477,5 +477,6 @@
   "mammoth-ag.go"
   "grenadier.o"
   "grenadier-ag.go"
+  "entity-spawner.o"
   "mod-custom-code.o"
  ))

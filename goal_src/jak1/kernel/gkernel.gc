@@ -2581,9 +2581,8 @@
 (define *camera-master-dead-pool* (new 'global 'dead-pool 1 (* 8 1024) '*camera-master-dead-pool*))
 
 ;; used if other pools run out of space in debug mode
-(if *debug-segment*
-    (define *debug-dead-pool* (new 'debug 'dead-pool-heap '*debug-dead-pool* 768 (* 1024 1024)))
-    )
+
+(define *debug-dead-pool* (new 'debug 'dead-pool-heap '*debug-dead-pool* 768 (* 1024 1024)))
 
 ;; variable sized actor pool (most actors go here)
 (define *nk-dead-pool* (new 'global 'dead-pool-heap '*nk-dead-pool* (* PROCESS_HEAP_MULT 768) PROCESS_HEAP_SIZE))
