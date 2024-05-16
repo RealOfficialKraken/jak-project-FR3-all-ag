@@ -1313,8 +1313,7 @@
   (none)
   )
 
-
-(defbehavior grenadier-init-by-other grenadier ((vec vector))
+  (defbehavior grenadier-init-by-other grenadier ((vec vector))
   (init-enemy-collision! self)
   (logior! (-> self mask) (process-mask actor-pause))
   (vector-copy! (-> self root trans) vec)

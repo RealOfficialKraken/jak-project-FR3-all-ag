@@ -51,14 +51,23 @@
                     )
                 )
             )
-            (let ((rng (rand-vu-int-range 1 2))) ;//type selection
-                (when (= rng 1)
-                    (process-spawn grenadier vec)
-                    (format #t "Spawned Entity Grenadier")
-                )
-                (when (= rng 2)
-                    (process-spawn fodder-custom vec)
-                    (format #t "Spawned Entity Fodder")
+            (when 
+            (and 
+            *target*
+            )
+                (let ((rng (rand-vu-int-range 1 3))) ;//type selection
+                    (when (= rng 1)
+                        (process-spawn grenadier vec)
+                        (format #t "Spawned Entity Grenadier")
+                    )
+                    (when (= rng 2)
+                        (process-spawn fodder-custom vec)
+                        (format #t "Spawned Entity Fodder-Custom")
+                    )
+                    (when (= rng 3)
+                        (process-spawn mantis-custom vec)
+                        (format #t "Spawned Entity Mantis-Custom")
+                    )
                 )
             )
         )
@@ -71,4 +80,5 @@
     (set! spawnslot 0)
     (kill-by-name "fodder-custom" *default-pool*)
     (kill-by-name "grenadier" *default-pool*)
+    (kill-by-name "mantis-custom" *default-pool*)
 )

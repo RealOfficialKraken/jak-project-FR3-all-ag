@@ -476,7 +476,11 @@
   "mammoth-custom.o"
   "mammoth-ag.go"
   "grenadier.o"
+  "grenadier-custom.o"
   "grenadier-ag.go"
+  "mantis.o"
+  "mantis-ag.go"
+  "mantis-custom.o"
   "entity-spawner.o"
   "mod-custom-code.o"
  ))
