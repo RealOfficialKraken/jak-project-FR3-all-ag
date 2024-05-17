@@ -298,10 +298,15 @@ void extract_common(const ObjectFileDB& db,
   extract_single_ag("RUI.DGO", "amphibian-ag", db, tex_db, tfrag_level);
   extract_single_ag("RUI.DGO", "rapid-gunner-ag", db, tex_db, tfrag_level);
   extract_single_ag("RUI.DGO", "grunt-ag", db, tex_db, tfrag_level);
+  extract_single_ag("FOR.DGO", "predator-ag", db, tex_db, tfrag_level);
+  extract_single_ag("RUI.DGO", "flitter-ag", db, tex_db, tfrag_level);
+  extract_single_ag("MTX.DGO", "rhino-ag", db, tex_db, tfrag_level);
+  extract_single_ag("DRI.DGO", "centurion-ag", db, tex_db, tfrag_level);
   extract_single_ag("NES.DGO", "mammoth-ag", db, tex_db, tfrag_level);
   extract_single_ag("NES.DGO", "flying-spider-ag", db, tex_db, tfrag_level);
   extract_single_ag("NES.DGO", "mantis-ag", db, tex_db, tfrag_level);
   extract_single_ag("NES.DGO", "mammoth-ag", db, tex_db, tfrag_level);
+  
 
   std::set<std::string> textures_we_have;
 

@@ -5,8 +5,35 @@
 ;; name in dgo: mod-custom-code
 ;; dgos: ENGINE, GAME
 
+;traffic-metalheads controls traffic to default value: 
+;(send-event *traffic-manager* 'set-guard-target-level 100)
 
+;set traffic to guards only
+;(send-event *traffic-manager* 'set-guard-target-level 100)
 
+;set traffic to metalheads only
+;(send-event *traffic-manager* 'set-guard-target-level 100)
+
+;set traffic to both guards and metalheads
+;
+
+(defun dark-mode ()
+(set! (-> *mood-control* overide-weather-flag) #t)
+  (set! (-> *mood-control* overide fog) 1.0)
+  (set! (-> *mood-control* overide cloud) 1.0)
+  (set! (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+(none)
+)
+
+(when 
+(and 
+(= (pause-allowed?) #t)
+*target*
+(not *scene-player*)
+(!= (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+)
+(dark-mode)
+)
 
 (defun get-nav-control ((arg0 process-drawable) (arg1 nav-mesh))
   (if (not arg1)
@@ -23,6 +50,8 @@
 (define cdr 0)
 (define-extern spawnslot int)
 (define-extern spawncap int)
+
+(defun-extern spawn-process-group-rhino (none))
 
 (defun runs-every-frame ()
 
@@ -50,7 +79,7 @@
 (<= spawnslot spawncap)
 )
     (when (rand-vu-percent? 0.03)
-        (spawn-process-entity)
+        (spawn-process-mantis)
         (set! cdr 20)
     )
 )
@@ -59,12 +88,12 @@
 )
 
 (defun runs-on-target-death-0hp ()
-    (format #t "You have 0HP, you died!")
+    (format #t "(runs-on-target-death-0hp)")
     (none)
 )
 
 (defun runs-on-target-death-blackout ()
-    (format #t "You respawned!")
+    (format #t "(runs-on-target-death-blackout)")
     (kill-all-process-entity)
     (none)
 )
