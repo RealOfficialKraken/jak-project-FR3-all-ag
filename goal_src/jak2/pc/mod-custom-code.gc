@@ -184,32 +184,86 @@ This commonly includes things such as:
 (define cdr 0)
 (define-extern spawnslot int)
 (define-extern spawncap int)
+(define *rift-tracker* (the (pointer rift-ring-ingame) #f))
+(define target-in? #f)
 
 (defun-extern spawn-process-group-rhino (none))
 
-(defun runs-every-frame ()
 
-(when 
+
+(defun runs-every-frame () ;self explanitory
+
+(when ;define target-in? #t
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+(= target-in? #f)
+)
+  (set! target-in? #t)
+)
+
+(when  ;define target-in? #f
+(and
+(or 
+(not *target*)
+*scene-player*
+(= (pause-allowed?) #f)
+(= (paused?) #t)
+)
+(= target-in? #t)
+)
+  (set! target-in? #f)
+)
+
+
+
+(when ;spawn rift ring in port
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= target-in? #t)
+(not (ppointer->process *rift-tracker*))
+(= (-> (level-get-target-inside *level*) name) 'ctyport)
+)
+  (let 
+    ((v1-0 (new 'static 'vector :x (meters 184.4103) :y (meters 25.9454) :z (meters 1666.8566))))
+      (process-spawn rift-ring-ingame v1-0)
+      (set! *rift-tracker* (process-spawn rift-ring-ingame v1-0))
+    )
+)
+
+(when ;despawn rift ring in port
+(and
+(ppointer->process *rift-tracker*)
+(!= (-> (level-get-target-inside *level*) name) 'ctyport)
+)
+  (kill-by-name "rift-ring-ingame" *default-pool*)
+  (set! *rift-tracker* #f)
+)
+
+
+
+
+
+
+(when ;CDR for in-game? spawn
 (and 
 (= in-game? #t) 
 (>= cdr 1)
 (= in-game? #t)
-*target*
-(not *scene-player*)
-(= (pause-allowed?) #t)
-(= (paused?) #f)
+(= target-in? #t)
 )
     (-! cdr 1)
 )
 
-(when 
+(when ;checks for in-game? then spawns enemies around jak
 (and 
 (= in-game? #t)
 (= cdr 0)
-*target*
-(not *scene-player*)
-(= (pause-allowed?) #t)
-(= (paused?) #f)
+(= target-in? #t)
 (<= spawnslot spawncap)
 )
     (when (rand-vu-percent? 0.03)
