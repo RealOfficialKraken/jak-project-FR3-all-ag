@@ -118,6 +118,9 @@ This commonly includes things such as:
   (set! (-> self spin-sound-playing) #f)
   (set! (-> self event-hook) (-> (method-of-object self idle) event))
   (go (method-of-object self idle))
+  (set! (-> self root scale x) 10.0)
+  (set! (-> self root scale y) 10.0)
+  (set! (-> self root scale z) 10.0)
   (none)
   )
 
@@ -226,10 +229,13 @@ This commonly includes things such as:
 (= (pause-allowed?) #t)
 (= target-in? #t)
 (not (ppointer->process *rift-tracker*))
+(or 
 (= (-> (level-get-target-inside *level*) name) 'ctyport)
+(= (-> (level-get-target-inside *level*) name) 'ctypal)
+)
 )
   (let 
-    ((v1-0 (new 'static 'vector :x (meters 184.4103) :y (meters 25.9454) :z (meters 1666.8566))))
+    ((v1-0 (new 'static 'vector :x (meters 183.9417) :y (meters 48.5856) :z (meters 1546.0906))))
       (process-spawn rift-ring-ingame v1-0)
       (set! *rift-tracker* (process-spawn rift-ring-ingame v1-0))
     )
@@ -238,7 +244,10 @@ This commonly includes things such as:
 (when ;despawn rift ring in port
 (and
 (ppointer->process *rift-tracker*)
-(!= (-> (level-get-target-inside *level*) name) 'ctyport)
+  (and 
+    (!= (-> (level-get-target-inside *level*) name) 'ctyport)
+    (!= (-> (level-get-target-inside *level*) name) 'ctypal)
+  )
 )
   (kill-by-name "rift-ring-ingame" *default-pool*)
   (set! *rift-tracker* #f)

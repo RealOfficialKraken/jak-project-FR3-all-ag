@@ -7,7 +7,7 @@
 
 ;; DECOMP BEGINS
 
-(define traffic-metalheads #t)
+(define traffic-metalheads #f)
 
 (define *traffic-engine* (the-as traffic-engine #f))
 
@@ -72,7 +72,10 @@
       )
     )
     (let ((gp-0 *traffic-engine*))
-    (when (= traffic-metalheads #f) ;terrible copypaste hack
+    (when 
+    (and 
+    (= traffic-metalheads #f)
+    ) ;terrible copypaste hack
          (set! (-> gp-0 object-type-info-array 0 level) #f)
          (set! (-> gp-0 object-type-info-array 1 level) #f)
          (set! (-> gp-0 object-type-info-array 2 level) #f)
@@ -93,12 +96,15 @@
          (set! (-> gp-0 object-type-info-array 17 level) #f)
          (set! (-> gp-0 object-type-info-array 18 level) 'lwidea)
          (set! (-> gp-0 object-type-info-array 19 level) 'lwidea)
-         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
          (logclear! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
          (logior! (-> gp-0 alert-state flags) (traffic-alert-flag guard-multi-focus))
-         (set! *traffic-alert-level-force* #t)
+         (set! (-> *traffic-engine* alert-state level) (the-as uint 0))
+         (set! *traffic-alert-level-force* #f)
         )
-         (when (= traffic-metalheads #t)
+         (when 
+         (and 
+         (= traffic-metalheads #t)
+         )
          (set! (-> gp-0 object-type-info-array 0 level) #f)
          (set! (-> gp-0 object-type-info-array 1 level) #f)
          (set! (-> gp-0 object-type-info-array 2 level) #f)
@@ -904,7 +910,9 @@
          (set! (-> gp-0 object-type-info-array 17 level) #f)
          (set! (-> gp-0 object-type-info-array 18 level) 'lwidea)
          (set! (-> gp-0 object-type-info-array 19 level) 'lwidea)
-         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
+         (logclear! (-> gp-0 alert-state flags) (traffic-alert-flag target-jak))
+         (logior! (-> gp-0 alert-state flags) (traffic-alert-flag guard-multi-focus))
+         (set! (-> *traffic-engine* alert-state level) (the-as uint 0))
          (set! *traffic-alert-level-force* #f)
         )
          (when (= traffic-metalheads #t)
