@@ -469,36 +469,56 @@
   "mech.o"
   "ruins-obs.o"
   "nest-obs.o"
-  "fodder.o";fodder
+  "fodder.o";;fodder
   "fodder-custom.o"
   "fodder-ag.go"
-  "mammoth.o";mammoth
+  "mammoth.o";;mammoth
   "mammoth-custom.o"
   "mammoth-ag.go"
-  "grenadier.o";grenadier
+  "grenadier.o";;grenadier
   "grenadier-custom.o"
   "grenadier-ag.go"
-  "mantis.o";mantis
+  "mantis.o";;mantis
   "mantis-ag.go"
   "mantis-custom.o"
-  "flitter.o";flitter
+  "flitter.o";;flitter
   "flitter-ag.go"
-  "grunt.o"
+  "grunt.o";;grunt
   "grunt-ag.go"
-  "flying-spider.o"
+  "flying-spider.o";;flying-spider
   "flying-spider-ag.go"
-  "rapid-gunner.o"
+  "rapid-gunner.o";;rapid-gunner
   "rapid-gunner-ag.go"
-  "centurion.o"
+  "centurion.o";;centurion
   "centurion-ag.go"
-  "rhino.o"
+  "rhino.o";;rhino
   "rhino-ag.go"
-  "hover-formation-h.o"
-  "hover-enemy-battle.o"
-  "predator-h.o"
+  "hover-formation-h.o";;for predator
+  "hover-enemy-battle.o";;for predator
+  "predator-h.o";;predator
   "predator-graph.o"
   "predator.o"
   "predator-ag.go"
-  "entity-spawner.o"
-  "mod-custom-code.o"
+  "hover-nav-control-h.o";; vv   pulled from neb.gd   vv
+  "hover-enemy-h.o"
+  "hover-nav-network.o"
+  "hover-nav-control.o"
+  "hover-enemy.o"
+  "hover-enemy-battle.o"
+  "hover-formation.o"
+  "hover-nav-edit.o"
+  "wasp-part.o"
+  "wasp.o"
+  "crimson-guard-hover.o"
+  "flamer.o"
+  "nest-texture.o"
+  "metalkor-part.o"
+  "metalkor-setup.o"
+  "metalkor-states.o"
+  "metalkor-extras.o"
+  "nestb-scenes.o"
+  "nestb-part.o";;      ^^                          ^^
+  "rift-ring-in-game-ag.go";;rift-ring-in-game
+  "entity-spawner.o";; added
+  "mod-custom-code.o";; added
  ))
