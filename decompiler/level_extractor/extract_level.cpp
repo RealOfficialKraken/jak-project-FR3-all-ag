@@ -307,6 +307,8 @@ void extract_common(const ObjectFileDB& db,
   extract_single_ag("NES.DGO", "mantis-ag", db, tex_db, tfrag_level);
   extract_single_ag("NES.DGO", "mammoth-ag", db, tex_db, tfrag_level);
   extract_single_ag("NEB.DGO", "rift-ring-in-game-ag", db, tex_db, tfrag_level);
+  extract_single_ag("VIN.DGO", "vin-ag", db, tex_db, tfrag_level);
+  extract_single_ag("SAG.DGO", "torn-highres-ag", db, tex_db, tfrag_level);
   
 
   std::set<std::string> textures_we_have;

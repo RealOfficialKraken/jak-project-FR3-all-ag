@@ -5,24 +5,14 @@
 ;; name in dgo: war-tracker
 ;; dgos: ENGINE, GAME
 
-(defenum war-city-type
-    :type uint64
-    (ctyslumc 0)
-    (ctyslumb 1)
-    (ctysluma 2)
-    (ctyinda 3)
-    (ctyindb 4)
-    (ctyindc 5)
-    (ctyport 6)
-    (ctypal 7)
-)
+(define-extern traffic-metalheads symbol)
 
 (defun war-tracker! ()
 
     (when (= (-> *game-info* continue-deaths) 0) ;sets to 1billion on default value
   (set! (-> *game-info* continue-deaths) 1000000000)
 )
-(when (= (-> *game-info* task-deaths) 0) ;sets to 1billion on default value
+(when (= (-> *game-info* task-deaths) 0) ;sets to 10million on default value
   (set! (-> *game-info* task-deaths) 10000000)
 )
 

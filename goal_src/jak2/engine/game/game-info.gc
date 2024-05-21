@@ -249,7 +249,7 @@
         (story-complete 0)
         )
     0.0
-    (let ((story-min (game-task fortress-escape))
+    (let ((story-min (game-task drill-eggs))
           (story-max (game-task nest-boss))
           )
       (while (>= (the-as uint story-max) (the-as uint story-min))
@@ -370,7 +370,7 @@
           "demo-start"
           )
          (*debug-segment*
-           "game-start"
+           "atoll-start"
            )
          (else
            "title-start"
@@ -532,7 +532,7 @@
                                       (set! (-> self mask) (process-mask))
                                       (stop arg0)
                                       (reset-actors arg1)
-                                      (close! (-> *game-info* sub-task-list (game-task-node fortress-escape-start)) 'event)
+                                      (close! (-> *game-info* sub-task-list (game-task-node drill-eggs-introduction)) 'event)
                                       (set-continue! *game-info* arg2 #f)
                                       (when arg3
                                         (load-game *game-info* arg3)

@@ -36,11 +36,11 @@
           (new 'static 'game-task-info
             :name "fortress-escape"
             :text-name (text-id progress-missions-fortress-escape)
-            :pre-play-node (game-task-node fortress-escape-start)
-            :kiosk-play-node (game-task-node fortress-escape-introduction)
+            :pre-play-node (game-task-node drill-eggs-introduction)
+            :kiosk-play-node (game-task-node drill-eggs-eggs-0)
             :pre-play-continue #f
-            :play-node (game-task-node fortress-escape-resolution)
-            :play-continue "prison-start"
+            :play-node (game-task-node drill-eggs-resolution)
+            :play-continue "atoll-start"
             :kiosk-play-continue #f
             )
           (new 'static 'game-task-info
@@ -2706,9 +2706,9 @@
             :when-open (new 'static 'boxed-array :type game-task-event
               (new 'static 'game-task-event
                 :actor (game-task-actor torn-hideout)
-                :action (game-task-action talk)
+                :action (game-task-action say)
                 :tex (game-task-icon gaticon-03)
-                :scene "atoll-3-intro"
+                :scene #f
                 )
               (new 'static 'game-task-event
                 :actor (game-task-actor ashelin-atoll)
@@ -3717,9 +3717,15 @@
             :when-open (new 'static 'boxed-array :type game-task-event
               (new 'static 'game-task-event
                 :actor (game-task-actor vin-vinroom)
-                :action (game-task-action say)
+                :action (game-task-action idle)
                 :tex (game-task-icon gaticon-02)
-                :scene "drill-kill-metal-heads-intro"
+                :scene #f
+                )
+                (new 'static 'game-task-event
+                :actor (game-task-actor torn-hideout)
+                :action (game-task-action idle)
+                :tex (game-task-icon gaticon-02)
+                :scene #f
                 )
               (new 'static 'game-task-event
                 :actor (game-task-actor minimap)
