@@ -1709,7 +1709,7 @@
             :borrow '((hideout 0 ltrnysam special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-pass-red)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-fortress-dump)
             )
           (new 'static 'game-task-node-info
@@ -2736,7 +2736,7 @@
             :borrow '((hideout 0 ltrnysam special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-pass-yellow)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-atoll-battle)
             )
           (new 'static 'game-task-node-info
@@ -3136,7 +3136,7 @@
             :borrow '((hiphog 0 lguard special))
             :open? #f
             :on-close #f
-            :add (game-task-node-command add-pass-green)
+            :add (game-task-node-command none)
             :description (text-id progress-missions-talk-to-krew)
             )
           (new 'static 'game-task-node-info
