@@ -8,6 +8,9 @@
 ;; DECOMP BEGINS
 
 (defun-extern runs-every-frame (none))
+(defun-extern war-tracker! (none))
+(define matt-str (new 'global 'string 2048 (the-as string #f)))
+(define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
 
 (defun set-letterbox-frames ((arg0 time-frame))
   "Set the remaining time until letterboxing is removed.
@@ -868,6 +871,7 @@
         (load-continue (-> *level* loading-level))
         )
     (runs-every-frame)
+    (war-tracker!)
 
     ; ;; Run blerc to modify foreground models
     (with-profiler 'merc *profile-merc-color*

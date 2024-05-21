@@ -519,6 +519,7 @@
   "nestb-scenes.o"
   "nestb-part.o";;      ^^                          ^^
   "rift-ring-in-game-ag.go";;rift-ring-in-game
+  "war-tracker.o" ;; added
   "entity-spawner.o";; added
   "mod-custom-code.o";; added
  ))

@@ -193,6 +193,8 @@ This commonly includes things such as:
 (defun-extern spawn-process-group-rhino (none))
 
 
+(defun-extern war-ctyport symbol)
+
 
 (defun runs-every-frame () ;self explanitory
 
@@ -253,11 +255,6 @@ This commonly includes things such as:
   (set! *rift-tracker* #f)
 )
 
-
-
-
-
-
 (when ;CDR for in-game? spawn
 (and 
 (= in-game? #t) 
@@ -281,7 +278,9 @@ This commonly includes things such as:
     )
 )
 
-(none)
+
+
+(none) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;END RUNS EVERY FRAME
 )
 
 (defun runs-on-target-death-0hp ()
