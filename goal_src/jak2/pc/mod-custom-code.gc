@@ -240,6 +240,9 @@ This commonly includes things such as:
     ((v1-0 (new 'static 'vector :x (meters 183.9417) :y (meters 48.5856) :z (meters 1546.0906))))
       (process-spawn rift-ring-ingame v1-0)
       (set! *rift-tracker* (process-spawn rift-ring-ingame v1-0))
+        (format #t "
+spawned process rift-ring-ingame
+")
     )
 )
 
@@ -253,6 +256,9 @@ This commonly includes things such as:
 )
   (kill-by-name "rift-ring-ingame" *default-pool*)
   (set! *rift-tracker* #f)
+  (format #t "
+killed rift-ring-ingame
+")
 )
 
 (when ;CDR for in-game? spawn
