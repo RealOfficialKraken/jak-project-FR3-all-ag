@@ -468,6 +468,7 @@
   "mech-h.o"
   "mech.o"
   "ruins-obs.o"
+  "vinroom-obs.o"
   "nest-obs.o"
   "fodder.o";;fodder
   "fodder-custom.o"
@@ -521,6 +522,7 @@
   "rift-ring-in-game-ag.go";;rift-ring-in-game
   "vin-ag.go"
   "torn-highres-ag.go"
+  "vin-turbine-ag.go"
   "actordef-h.o"
   "war-tracker.o" ;; added
   "entity-spawner.o";; added

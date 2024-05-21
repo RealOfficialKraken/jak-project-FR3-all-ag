@@ -57,16 +57,7 @@
 (none)
 )
 
-;updates level to dark-mode
-(when 
-(and 
-(= (pause-allowed?) #t)
-*target*
-(not *scene-player*)
-(!= (-> (level-get-target-inside *level*) mood-func) update-mood-nest)
-)
-(dark-mode)
-)
+
 
 (defun get-nav-control ((arg0 process-drawable) (arg1 nav-mesh))
   (if (not arg1)
@@ -86,6 +77,7 @@
 (define *rift-tracker* (the (pointer rift-ring-ingame) #f))
 (define *torn-tracker* (the (pointer torn-npc) #f))
 (define *vin-tracker* (the (pointer vin-npc) #f))
+(define *turbine-tracker* (the (pointer vin-turbine) #f))
 (define target-in? #f)
 
 (defun-extern spawn-process-group-rhino (none))
@@ -118,6 +110,18 @@
 (= target-in? #t)
 )
   (set! target-in? #f)
+)
+
+;updates level to dark-mode
+(when 
+(and 
+(= (pause-allowed?) #t)
+*target*
+(not *scene-player*)
+(= traffic-metalheads #t)
+(!= (-> (level-get-target-inside *level*) mood-func) update-mood-nest)
+)
+(dark-mode)
 )
 
 
@@ -170,7 +174,7 @@ killed rift-ring-ingame
 (= (-> (level-get-target-inside *level*) name) 'atoll)
 )
   (let 
-    ((v1-0 (new 'static 'vector :x (meters 570.5107) :y (meters 0.1190) :z (meters -851.8250))))
+    ((v1-0 (new 'static 'vector :x (meters 570.5107) :y (meters 0.70) :z (meters -851.8250))))
       (process-spawn vin-npc v1-0)
       (set! *vin-tracker* (process-spawn vin-npc v1-0))
         (format #t "
@@ -195,7 +199,7 @@ killed vin-npc
 )
 
 
-(when ;spawn vin-npc in atoll
+(when ;spawn torn-npc in atoll
 (and
 *target*
 (not *scene-player*)
@@ -207,7 +211,7 @@ killed vin-npc
 )
 )
   (let 
-    ((v1-0 (new 'static 'vector :x (meters 577.5107) :y (meters 0.1190) :z (meters -851.8250))))
+    ((v1-0 (new 'static 'vector :x (meters 577.5107) :y (meters 1.0) :z (meters -851.8250))))
       (process-spawn torn-npc v1-0)
       (set! *torn-tracker* (process-spawn torn-npc v1-0))
         (format #t "
@@ -228,6 +232,42 @@ spawned process torn-npc
   (set! *torn-tracker* #f)
   (format #t "
 killed torn-npc
+")
+)
+
+(when ;spawn vin-turbine in atoll
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= target-in? #t)
+(not (ppointer->process *turbine-tracker*))
+(or 
+(= (-> (level-get-target-inside *level*) name) 'atoll)
+)
+)
+  (let 
+    ((v1-0 (new 'static 'vector :x (meters 561.9455) :y (meters 10.0) :z (meters -861.3982))))
+      (process-spawn vin-turbine v1-0)
+      (set! *turbine-tracker* (process-spawn vin-turbine v1-0))
+        (format #t "
+spawned process vin-turbine
+")
+    )
+)
+
+(when ;despawn torn-npc in port
+(and
+(ppointer->process *turbine-tracker*)
+  (and 
+    (!= (-> (level-get-target-inside *level*) name) 'atoll)
+    (!= (-> (level-get-target-inside *level*) name) 'atollext)
+  )
+)
+  (kill-by-name "vin-turbine" *default-pool*)
+  (set! *turbine-tracker* #f)
+  (format #t "
+killed vin-turbine
 ")
 )
 

@@ -3116,7 +3116,7 @@
         (apply ,(lambda :behavior scene-player
                   ()
                   (when (-> self aborted?)
-                    (task-node-close! (game-task-node fortress-escape-introduction))
+                    (task-node-close! (game-task-node drill-eggs-introduction))
                     (disable *screen-filter*)
                     (set-blackout-frames (seconds 0.2))
                     (remove-setting! 'allow-blackout)
@@ -3632,7 +3632,7 @@
         (apply ,(lambda :behavior scene-player
                   ()
                   (when (-> self aborted?)
-                    (task-node-close! (game-task-node fortress-escape-introduction))
+                    (task-node-close! (game-task-node drill-eggs-introduction))
                     (remove-setting! 'allow-blackout)
                     (disable *screen-filter*)
                     )
@@ -4068,7 +4068,7 @@
         (apply ,(lambda :behavior scene-player
                   ()
                   (if (-> self aborted?)
-                      (task-node-close! (game-task-node fortress-escape-introduction))
+                      (task-node-close! (game-task-node drill-eggs-introduction))
                       )
                   (disable *screen-filter*)
                   (kill-by-type talker *active-pool*)
@@ -4609,7 +4609,7 @@
         )
       (2820 (send-event "jak-highres-prison" 'shadow #t))
       (3521 (fadeout (frame-time-30 15)))
-      (10000 (task-close! "fortress-escape-introduction"))
+      (10000 (task-close! "drill-eggs-introduction"))
       )
     :cut-list '(340
        591
@@ -4762,7 +4762,7 @@
         )
       )
     :load-point-obj "prison-intro-start"
-    :end-point-obj "prison-start"
+    :end-point-obj "atoll-start"
     :borrow '((prison 0 ldjakbrn special) (introcst 0 #f #f))
     :sfx-volume -1.0
     :ambient-volume -1.0
