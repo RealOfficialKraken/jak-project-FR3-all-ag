@@ -1,0 +1,1048 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: jak3-custom-code.gc
+
+#|MODIFIER IDEAS
+
+Good modifiers:
+---------------------------------------------------------------
+- Jak X Vehicle Boost Tap (unlimited boost, can tap like in Jak X)
+- Fast Attacks (your attacks get a tiny bit faster after each enemy kill. Caps at a reasonable place)
+- Luck stat (jak gets a luck stat added, which works either in his favor, or not)
+- Triple Jump (oh man it's the spicy triple baby, we've always wanted this)
+
+---------------------------------------------------------------
+Bad modifiers:
+---------------------------------------------------------------
+- All Enemy HP X6
+- Target Explode 
+- Ambush (a single enemy is picked at random, then they all get spawned around jak.)
+- More enemies, less friendlies
+
+---------------------------------------------------------------
+
+
+
+|#
+
+(define menu-unlocked? #f)
+
+
+(defun camera-locked ()
+  (send-event *target* 'draw #f)
+  (set-setting-by-param *setting-control* 'mode-name 'cam-eye 0 0)
+  (persist-with-delay *setting-control* 'gun (seconds 0.5) 'gun #f 0.0 0)
+  (process-grab? *target* #f)
+  (set! camera-locked? #t)
+(none)
+)
+
+(defun camera-unlocked ()
+  (remove-setting-by-arg0 *setting-control* 'mode-name)
+  (send-event *target* 'draw #t)
+  (process-release? *target*)
+  (set! camera-locked? #f)
+(none)
+)
+
+(defun roll-modifierg ()
+(let ((rnd (rand-vu-int-range 1 max-modg)))
+(when (= rnd 1)
+    (set! (-> *game-info* continue-deaths) 1)
+)
+(when (= rnd 2)
+    (set! (-> *game-info* continue-deaths) 2)
+)
+(when (= rnd 3)
+    (set! (-> *game-info* continue-deaths) 3)
+)
+(when (= rnd 4)
+    (set! (-> *game-info* continue-deaths) 4)
+)
+(when (= rnd 5)
+    (set! (-> *game-info* continue-deaths) 5)
+)
+(when (= rnd 6)
+    (set! (-> *game-info* continue-deaths) 6)
+)
+(when (= rnd 7)
+    (set! (-> *game-info* continue-deaths) 7)
+)
+(when (= rnd 8)
+    (set! (-> *game-info* continue-deaths) 8)
+)
+(when (= rnd 9)
+    (set! (-> *game-info* continue-deaths) 9)
+)
+(when (= rnd 10)
+    (set! (-> *game-info* continue-deaths) 10)
+)
+(when (= rnd 11)
+    (set! (-> *game-info* continue-deaths) 11)
+)
+(when (= rnd 12)
+    (set! (-> *game-info* continue-deaths) 12)
+)
+(when (= rnd 13)
+    (set! (-> *game-info* continue-deaths) 13)
+)
+(when (= rnd 14)
+    (set! (-> *game-info* continue-deaths) 14)
+)
+(when (= rnd 15)
+    (set! (-> *game-info* continue-deaths) 15)
+)
+
+)
+(none)
+)
+
+(defun roll-modifierb ()
+(let ((rnd (rand-vu-int-range 1 max-modb)))
+(when (= rnd 1)
+    (set! (-> *game-info* task-deaths) 1)
+)
+(when (= rnd 2)
+    (set! (-> *game-info* task-deaths) 2)
+)
+(when (= rnd 3)
+    (set! (-> *game-info* task-deaths) 3)
+)
+(when (= rnd 4)
+    (set! (-> *game-info* task-deaths) 4)
+)
+(when (= rnd 5)
+    (set! (-> *game-info* task-deaths) 5)
+)
+(when (= rnd 6)
+    (set! (-> *game-info* task-deaths) 6)
+)
+(when (= rnd 7)
+    (set! (-> *game-info* task-deaths) 7)
+)
+(when (= rnd 8)
+    (set! (-> *game-info* task-deaths) 8)
+)
+(when (= rnd 9)
+    (set! (-> *game-info* task-deaths) 9)
+)
+(when (= rnd 10)
+    (set! (-> *game-info* task-deaths) 10)
+)
+(when (= rnd 11)
+    (set! (-> *game-info* task-deaths) 11)
+)
+(when (= rnd 12)
+    (set! (-> *game-info* task-deaths) 12)
+)
+(when (= rnd 13)
+    (set! (-> *game-info* task-deaths) 13)
+)
+(when (= rnd 14)
+    (set! (-> *game-info* task-deaths) 14)
+)
+(when (= rnd 15)
+    (set! (-> *game-info* task-deaths) 15)
+)
+
+)
+(none)
+)
+
+(defun runs-jak3-every-frame () ;;START RUNNING EVERY FRAME
+
+(when (and (= menu-unlocked? #f) (task-node-closed? (game-task-node arena-fight-1-resolution)))
+    (set! menu-unlocked? #t)
+)
+
+(when (= uni-count1 #t)
+    (+! uni 1)
+    (when (= uni 30)
+        (set! uni 0)
+        (set! uni-count1 #f)
+    )
+)
+
+    (when (and 
+    (or
+    (not (logtest? (-> *game-info* features) (game-feature board)))
+    )
+    )
+    (logior! (-> *game-info* features) (game-feature 
+                                                    gun
+                                                    board
+                                                    gun-upgrade-yellow-ammo-1
+                                                    gun-upgrade-yellow-ammo-2
+                                                    gun-upgrade-red-ammo-1
+                                                    gun-upgrade-red-ammo-2
+                                                    gun-upgrade-blue-ammo-1
+                                                    gun-upgrade-blue-ammo-2
+                                                    gun-upgrade-dark-ammo-1
+                                                    gun-upgrade-dark-ammo-2
+                                                    board-launch
+                                                    board-zap
+    ))
+    )
+
+
+
+
+(when 
+(and 
+(cpad-pressed? 0 r3) ;enter virtual menu
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #f)
+(= menu-unlocked? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= on-vehicle? #f)
+)
+(set! in-menu? #t)
+(camera-locked)
+(set! menu-slot 0)
+(set! menu-type 0)
+(when (= (-> *game-info* total-deaths) 0)
+    (set! (-> *game-info* total-deaths) 1)
+)
+)
+
+(when 
+(and 
+(cpad-pressed? 0 triangle) ;exit virtual menu
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+(set! in-menu? #f)
+(camera-unlocked)
+)
+
+(when 
+(and 
+(cpad-pressed? 0 triangle) ;exit modifiers menu
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+)
+(set! menu-slot 0)
+(set! in-modifiers? #f)
+)
+
+(when 
+(and 
+(cpad-pressed? 0 triangle) ;exit gunmods menu
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #t)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+(set! menu-slot 0)
+(set! in-gunmods? #f)
+(set! sq-string "")
+)
+
+(when 
+(and 
+(cpad-pressed? 0 triangle) ;exit superpowers menu
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #t)
+(= in-skill? #f)
+)
+(set! menu-slot 0)
+(set! in-superpowers? #f)
+(set! in-skill? #f)
+)
+(when 
+(and 
+(cpad-pressed? 0 triangle) ;exit skill to superpower menu
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #t)
+)
+(set! in-superpowers? #t)
+(set! in-skill? #f)
+)
+
+;controls
+
+(when 
+(and 
+(cpad-pressed? 0 x) ;select modifiers
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+(= menu-select 0)
+)
+(set! in-modifiers? #t)
+(set! menu-slot 0)
+(set! sq-string "Roll the modifier!")
+)
+(when 
+(and 
+(cpad-pressed? 0 square) ;modifiers select good
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+(= menu-slot 0)
+)
+(roll-modifierg)
+)
+(when 
+(and 
+(cpad-pressed? 0 square) ;modifiers select bad
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+(= menu-slot 1)
+)
+(roll-modifierb)
+)
+(when 
+(and 
+(cpad-pressed? 0 square) ;modifiers select both
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+(= menu-slot 2)
+)
+(roll-modifierb)
+(roll-modifierg)
+)
+
+(when 
+(and 
+(cpad-pressed? 0 x) ;select gunmods
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+(= menu-select 1)
+)
+(set! in-gunmods? #t)
+(set! menu-slot 0)
+(set! sq-string "Attach Gun Mod")
+)
+
+(when 
+(and 
+(cpad-pressed? 0 x) ;select superpowers
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+(= menu-select 2)
+)
+(set! in-superpowers? #t)
+(set! in-skill? #f)
+(set! menu-slot 0)
+(set! sq-string "Skill Info")
+)
+(when 
+(and 
+(cpad-pressed? 0 square) ;select skillset inside superpowers
+*target*
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(not *scene-player*)
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #t)
+(= in-skill? #f)
+(= menu-select 2)
+)
+(set! in-superpowers? #f)
+(set! in-skill? #t)
+)
+
+
+(when ;main select
+(and 
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (when ;main-down
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 down)
+        )
+    (+! menu-select 1)
+    (when (> menu-select 2)
+        (set! menu-select 0)
+    )
+    )
+
+    (when ;main-up
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 up)
+        )
+    (-! menu-select 1)
+    (when (< menu-select 0)
+        (set! menu-select 2)
+    )
+    )
+)
+
+(when ;modifiers select
+(and 
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (when ;main-down
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 down)
+        )
+    (+! menu-slot 1)
+    (when (> menu-slot 2)
+        (set! menu-slot 0)
+    )
+    )
+
+    (when ;main-up
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 up)
+        )
+    (-! menu-slot 1)
+    (when (< menu-slot 0)
+        (set! menu-slot 2)
+    )
+    )
+)
+
+(when ;gunmods select
+(and 
+(= in-modifiers? #f)
+(= in-gunmods? #t)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (when ;main-down
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 down)
+        )
+    (+! menu-slot 1)
+    (when (> menu-slot 1)
+        (set! menu-slot 0)
+    )
+    )
+
+    (when ;main-up
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 up)
+        )
+    (-! menu-slot 1)
+    (when (< menu-slot 0)
+        (set! menu-slot 1)
+    )
+    )
+)
+
+(when ;superpowers select
+(and 
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #t)
+(= in-skill? #f)
+)
+    (when ;main-down
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 down)
+        )
+    (+! menu-slot 1)
+    (when (> menu-slot 3)
+        (set! menu-slot 0)
+    )
+    )
+
+    (when ;main-up
+        (and 
+        (= in-menu? #t)
+        (cpad-pressed? 0 up)
+        )
+    (-! menu-slot 1)
+    (when (< menu-slot 0)
+        (set! menu-slot 3)
+    )
+    )
+)
+
+(when (and (= in-superpowers? #f)(= in-modifiers? #f)(= in-gunmods? #f)(= in-skill? #f))
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top
+(not (cpad-hold? 0 triangle))
+(not (cpad-hold? 0 x))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_BLUE>X<COLOR_ORANGE>) <COLOR_YELLOW>Select Option"
+    bm-string
+    gm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top (Pressing Triangle)
+(cpad-hold? 0 triangle)
+(not (cpad-hold? 0 x))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_GREEN> Back/Exit~%<COLOR_ORANGE>(<COLOR_BLUE>X<COLOR_ORANGE>) <COLOR_YELLOW>Select Option"
+    bm-string
+    gm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top (Pressing X)
+(not (cpad-hold? 0 triangle))
+(cpad-hold? 0 x)
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_BLUE>X<COLOR_ORANGE>) <COLOR_GREEN>Select Option"
+    bm-string
+    gm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+)
+
+(when (and (or (= in-superpowers? #t)(= in-modifiers? #t)(= in-gunmods? #t))(= in-skill? #f))
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top w/ square input
+(not (cpad-hold? 0 triangle))
+(not (cpad-hold? 0 square))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_RED>~s"
+    bm-string
+    gm-string
+    sq-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top (pressing triangle)
+(cpad-hold? 0 triangle)
+(not (cpad-hold? 0 square))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_GREEN> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_RED>~s"
+    bm-string
+    gm-string
+    sq-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top (pressing square input)
+(not (cpad-hold? 0 triangle))
+(cpad-hold? 0 square)
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_GREEN>~s"
+    bm-string
+    gm-string
+    sq-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+)
+
+(when (and (= in-superpowers? #f)(= in-skill? #t))
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top
+(not (cpad-hold? 0 triangle))
+(not (cpad-hold? 0 square))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit"
+    bm-string
+    gm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top (Pressing Triangle)
+(cpad-hold? 0 triangle)
+(not (cpad-hold? 0 square))
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_GREEN> Back/Exit"
+    bm-string
+    gm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when 
+(and
+(= in-menu? #t) ;says HM+ title at the top (Pressing X)
+(not (cpad-hold? 0 triangle))
+(cpad-hold? 0 square)
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%<COLOR_YELLOW>Modifiers are active!~%<COLOR_RED>~S <COLOR_WHITE>VS <COLOR_GREEN>~S~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit"
+    bm-string
+    gm-string
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+)
+
+(when ;displays main menu options
+(and 
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (when
+    (= menu-select 0)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_GREEN>(<)~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-select 1)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_WHITE>(<)~%<COLOR_BLUE>Gun Mods <COLOR_GREEN>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-select 2)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_WHITE>(<)~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_GREEN>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+)
+
+(when ;displays modifier menu options
+(and 
+(= in-menu? #t)
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (when
+    (= menu-slot 0)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Re-Roll <COLOR_GREEN>Good<COLOR_ORANGE> Modifier <COLOR_GREEN>(<)~%<COLOR_ORANGE>Re-Roll <COLOR_RED>Bad<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll Both Modifiers! <COLOR_WHITE>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 1)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Re-Roll <COLOR_GREEN>Good<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll <COLOR_RED>Bad<COLOR_ORANGE> Modifier <COLOR_GREEN>(<)~%<COLOR_ORANGE>Re-Roll Both Modifiers! <COLOR_WHITE>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when (= menu-slot 2)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Re-Roll <COLOR_GREEN>Good<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll <COLOR_RED>Bad<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll Both Modifiers! <COLOR_GREEN>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+)
+
+
+(when ;displays gunmod menu options
+(and 
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #t)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (when
+    (= menu-slot 0)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_BLUE>Gun Mods:~%~%<COLOR_ORANGE>??? <COLOR_GREEN>(<)~%<COLOR_ORANGE>??? <COLOR_WHITE>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 1)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_BLUE>Gun Mods:~%~%<COLOR_ORANGE>??? <COLOR_WHITE>(<)~%<COLOR_ORANGE>??? <COLOR_GREEN>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+)
+
+(when ;displays skill options
+(and 
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #t)
+(= in-skill? #f)
+)
+    (when
+    (= menu-slot 0)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_GREEN>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_WHITE>(<)"
+        notoriety-level
+        melee-level
+        guns-level
+        eco-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 1)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_WHITE>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_GREEN>(<)~%<COLOR_RED>Guns = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_WHITE>(<)"
+        notoriety-level
+        melee-level
+        guns-level
+        eco-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 2)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_WHITE>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns = ~d <COLOR_GREEN>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_WHITE>(<)"
+        notoriety-level
+        melee-level
+        guns-level
+        eco-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 3)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_WHITE>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_GREEN>(<)"
+        notoriety-level
+        melee-level
+        guns-level
+        eco-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+)
+
+(when ;displays one skill with all of its attributes
+(and 
+(= in-menu? #t)
+(= in-modifiers? #f)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #t)
+)
+    (when
+    (= menu-slot 0)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_PINK>Notoriety Level: ~d ~%~%<COLOR_ORANGE>Your Notoriety Level controls how fast, strong, and how much HP Jak has.~%However, enemies will also become stronger, too.~%~%<COLOR_YELLOW>Complete Main-Line/Side Missions, and level other skills to earn XP"
+        notoriety-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 1)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>Melee: ~d ~%~%<COLOR_ORANGE>Punching and Twirling from Jak's Melee will become faster as this levels up.~%~%<COLOR_YELLOW>Hitting <COLOR_WHITE>any<COLOR_RED> Enemies<COLOR_YELLOW> with Melee Attacks will earn XP in this area."
+        melee-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 2)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_YELLOW>Guns: ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete and pick up ammo to earn XP in this area."
+        guns-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 3)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>Eco Channeling: ~d ~%~%<COLOR_ORANGE>Jak's eco channeling abilities can cost less, and also replenish itself in certain circumstances.~%~%<COLOR_YELLOW>Use Dark or Light abilities to earn XP in this area."
+        eco-level
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+)
+
+(when (and (= (-> *game-info* total-deaths) 0)(= menu-unlocked? #t)(= on-vehicle? #f)(not *scene-player*)(= in-menu? #f))
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_RED>Press <COLOR_WHITE>R3 <COLOR_RED>to view the HeroMode+ stats!"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 310 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+(when (and 
+(= in-debug? #t)
+*debug-segment* 
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "<COLOR_GREEN>Mod Script Active!~%~%<COLOR_YELLOW>continue-deaths = <COLOR_ORANGE>~D~%<COLOR_YELLOW>task-deaths = <COLOR_ORANGE>~D~%<COLOR_YELLOW>total-deaths = <COLOR_ORANGE>~D~%<COLOR_RED>enemy-noto = ~d"
+    (-> *game-info* continue-deaths)
+    (-> *game-info* task-deaths)
+    (-> *game-info* total-deaths)
+    enemy-noto
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 1 0.0 (font-color default) (font-flags right shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+
+
+(none)
+)

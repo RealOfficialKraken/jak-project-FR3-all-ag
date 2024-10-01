@@ -472,4 +472,8 @@
   "debris.o"
   "shield-sphere.o"
   "entity-debug.o" ;; added
+  "actor-def.o"
+  "mod-save-stats.o"
+  "jak3-custom-code.o"
+  "xp-level.o"
  ))

@@ -15,6 +15,11 @@
 (define-extern override-player-controls (function cpad-info int))
 (define-extern *highscore-info-array* (array highscore-info))
 (define-extern *user* symbol)
+(define-extern *xp-gain* float)
+(define-extern xp-draw symbol)
+(define-extern xp-string string)
+(define-extern notoriety-level int)
+(define-extern xpi int)
 
 ;; DECOMP BEGINS
 
@@ -431,9 +436,9 @@
     )
   (case mode
     (('dead 'life)
-     (+! (-> this total-deaths) 1)
-     (+! (-> this continue-deaths) 1)
-     (+! (-> this task-deaths) 1)
+     (+! (-> this total-deaths) 0)
+     (+! (-> this continue-deaths) 0)
+     (+! (-> this task-deaths) 0)
      (when *target*
        (let ((level-info (-> *target* current-level info)))
          (set! (-> this deaths-per-level (-> level-info task-level))
@@ -452,7 +457,7 @@
        )
      )
     (('try)
-     (+! (-> this total-trys) 1)
+     (+! (-> this total-trys) 0)
      )
     )
   (case mode
@@ -548,7 +553,7 @@
      (set! (-> this health-collected) 0.0)
      (set! (-> this board-time) 0)
      (set! (-> this attack-id) (the-as uint 2))
-     (set! (-> this total-trys) 0)
+     (set! (-> this total-trys) 1)
      (set! (-> this total-deaths) 0)
      (set! (-> this continue-deaths) 0)
      (set! (-> this task-deaths) 0)
@@ -761,7 +766,7 @@
        (-> this skill)
        )
       (('karma)
-       (set! (-> this karma) (+ (-> this karma) arg1))
+       (set! (-> this karma) (+ (-> this karma) 0))
        )
       (('eco-pill-dark)
        (cond
@@ -790,10 +795,16 @@
       (('fuel-cell)
        (let ((s5-1 (the int arg1)))
          (when (not (or (task-complete? this (the-as game-task s5-1)) (>= (the-as uint 1) (the-as uint s5-1))))
-           (set! (-> this task-deaths) 0)
+           ;(set! (-> this task-deaths) 0)
+
+          (+! (-> *game-info* karma) (/ (* 130 notoriety-level) 2))
+          (set! *xp-gain* (the float (/ (* 130 notoriety-level) 2)))
+          (set! xp-string "Mission Complete")
+          (set! xp-draw #t)
+          (set! xpi 0)
            (set! (-> this task-pickup-time) (-> *display* game-clock frame-counter))
            (set! (-> this task-complete-time s5-1) (-> *display* game-clock frame-counter))
-           (+! (-> this fuel) 1.0)
+           (+! (-> this fuel) 0.0)
            (logior! (-> this task-perm-list data s5-1 status) (entity-perm-status complete))
            (task-resolution-close! (the-as game-task s5-1))
            )

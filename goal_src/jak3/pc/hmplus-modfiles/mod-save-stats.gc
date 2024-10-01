@@ -1,0 +1,158 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: mod-save-stats.gc
+
+
+
+;(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 0)
+
+
+(defun stat-tracker! ()
+;;Good Modifiers
+
+(when 
+(and 
+(= (-> *game-info* continue-deaths) 1) ;modifier boost-tap
+(= has-boost-tap? #f)
+)
+(set! has-boost-tap? #t)
+(set! gm-string "Jak X Vehicle Boost Tap")
+)
+
+(when 
+(and 
+(!= (-> *game-info* continue-deaths) 1)
+(= has-boost-tap? #t)
+)
+(set! has-boost-tap? #f)
+)
+
+(when 
+(and 
+(= (-> *game-info* continue-deaths) 2) ;modifier fast-attacks
+(= has-fast-attacks? #f)
+)
+(set! has-fast-attacks? #t)
+(set! gm-string "Fast Attacks")
+)
+
+(when 
+(and 
+(!= (-> *game-info* continue-deaths) 2)
+(= has-fast-attacks? #t)
+)
+(set! has-fast-attacks? #f)
+)
+
+(when 
+(and 
+(= (-> *game-info* continue-deaths) 3) ;modifier luck-stat?
+(= has-luck-stat? #f)
+)
+(set! has-luck-stat? #t)
+(set! gm-string "Luck Stat")
+)
+
+(when 
+(and 
+(!= (-> *game-info* continue-deaths) 3)
+(= has-luck-stat? #t)
+)
+(set! has-luck-stat? #f)
+)
+
+(when 
+(and 
+(= (-> *game-info* continue-deaths) 4) ;modifier triple-jump?
+(= has-triple-jump? #f)
+)
+(set! has-triple-jump? #t)
+(set! gm-string "Triple Jump")
+)
+
+(when 
+(and 
+(!= (-> *game-info* continue-deaths) 4)
+(= has-triple-jump? #t)
+)
+(set! has-triple-jump? #f)
+)
+
+(when 
+(and 
+(= (-> *game-info* continue-deaths) 5) ;modifier triple-jump?
+(= has-flight-boost? #f)
+)
+(set! has-flight-boost? #t)
+(set! gm-string "Bigger LightJak Flight Boost")
+)
+
+(when 
+(and 
+(!= (-> *game-info* continue-deaths) 5)
+(= has-flight-boost? #t)
+)
+(set! has-flight-boost? #f)
+)
+
+
+;;Bad modifiers
+
+(when 
+(and 
+(= (-> *game-info* task-deaths) 1) ;modifier enemy-hp?
+(= has-enemy-hp? #f)
+)
+(set! has-enemy-hp? #t)
+(set! bm-string "Boosted Enemy HP X6")
+)
+
+(when 
+(and 
+(!= (-> *game-info* task-deaths) 1)
+(= has-enemy-hp? #t)
+)
+(set! has-enemy-hp? #f)
+)
+
+(when 
+(and 
+(= (-> *game-info* task-deaths) 2) ;modifier ambush?
+(= has-ambush? #f)
+)
+(set! has-ambush? #t)
+(set! bm-string "Ambush")
+)
+
+(when 
+(and 
+(!= (-> *game-info* task-deaths) 2)
+(= has-ambush? #t)
+)
+(set! has-ambush? #f)
+)
+
+(when 
+(and 
+(= (-> *game-info* task-deaths) 3) ;modifier more-enemies?
+(= has-more-enemies? #f)
+)
+(set! has-more-enemies? #t)
+(set! bm-string "More Enemies, Less Friendlies")
+)
+
+(when 
+(and 
+(!= (-> *game-info* task-deaths) 3)
+(= has-more-enemies? #t)
+)
+(set! has-more-enemies? #f)
+)
+
+
+
+
+
+    (none)
+)

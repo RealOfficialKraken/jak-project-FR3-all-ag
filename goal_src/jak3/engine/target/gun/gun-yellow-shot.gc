@@ -1686,7 +1686,7 @@
   (dotimes (v1-9 6)
     (set! (-> this ignore-list v1-9 hand) (the-as handle #f))
     )
-  (set! (-> this max-actor-deflect-count) 4)
+  (set! (-> this max-actor-deflect-count) 1)
   (set! (-> this timeout) (seconds 3))
   (when (logtest? (game-secrets gun-upgrade-yellow-2) (-> *game-info* secrets))
     (set! (-> this max-actor-deflect-count) 7)

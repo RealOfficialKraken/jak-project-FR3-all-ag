@@ -5,6 +5,54 @@
 ;; name in dgo: game-info-h
 ;; dgos: GAME
 
+(define extra-offthetop 0.0)
+    (define draw-levelup-noto #f)
+    (define lvli 0)
+    (define *xp-gain* 0.0)
+    (define xp-draw #t)
+    (define xpi 0)
+    (define enemy-noto 0)
+    (define start-was-uprising #f)
+    (define wasi 0)
+
+  (define matt-str (new 'global 'string 2048 (the-as string #f)))
+  (define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
+
+  (define notoriety-level 0)
+  (define melee-level 0)
+  (define guns-level 0)
+  (define eco-level 0)
+
+  (define in-debug? #t)
+
+  (define bm-string "")
+  (define gm-string "")
+  (define sq-string "")
+  (define max-modg 5)
+  (define max-modb 3)
+  (define uni-count1 #f)
+  (define uni 0)
+  (define in-modifiers? #f)
+  (define in-gunmods? #f)
+  (define in-superpowers? #f)
+  (define in-skill? #f)
+  (define on-vehicle? #f)
+
+  (define menu-slot 0)
+  (define menu-type 0)
+  (define menu-select 0)
+
+  (define in-menu? #f)
+
+  (define has-boost-tap? #f)
+  (define has-fast-attacks? #f)
+  (define has-luck-stat? #f)
+  (define has-triple-jump? #f)
+  (define has-flight-boost? #f)
+  (define has-enemy-hp? #f)
+  (define has-ambush? #f)
+  (define has-more-enemies? #f)
+  (define camera-locked? #f)
 
 ;; +++game-items
 (defenum game-items

@@ -1,0 +1,199 @@
+;Lisp
+(in-package goal)
+
+;name: xp-level.gc
+
+#|
+(when 
+        (and
+            (= (/ (mod (-> *game-info* auto-save-count) 100000) 10000) 3)
+            
+        )
+
+    )
+    |#
+
+(defun level-up! ((arg0 int))
+    (+! (-> *game-info* total-trys) arg0)
+    (set! (-> *game-info* karma) extra-offthetop)
+    (set! draw-levelup-noto #t)
+    (none)
+)
+
+(defun enemy-killed? ((xp-gain float))
+    (+! (-> *game-info* karma) (* xp-gain enemy-noto))
+    (set! xp-string "Enemy Killed")
+    (set! *xp-gain* (* xp-gain enemy-noto))
+    (set! xp-draw #t)
+    (set! xpi 0)
+    (none)
+)
+
+(defun update-xp! ()
+    (when ;bind total-trys and notoriety-level together as a game-save stat
+        (!= notoriety-level (-> *game-info* total-trys))
+            (set! notoriety-level (-> *game-info* total-trys))
+    )
+    (when ;level up parameters
+        (and
+            (>= (-> *game-info* karma) (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level))
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (!= (-> *game-info* karma) 0.0)
+            (!= notoriety-level 0)
+        )
+            (set! extra-offthetop (- (-> *game-info* karma) (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level)))
+            (level-up! 1)
+        )
+
+
+        ;level based enemy-levels
+
+        (when ;WASCITYA
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'wascitya)
+                (!= enemy-noto 1)
+            )
+            (set! enemy-noto 1)
+        )
+        (when ;WASCITYB
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'wascityb)
+                (!= enemy-noto 2)
+            )
+            (set! enemy-noto 2)
+        )
+        (when ;ARENA FIGHT 1
+            (and
+                (task-node-open? (game-task-node arena-fight-1-fight))
+                (!= enemy-noto 1)
+            )
+            (set! enemy-noto 1)
+        )
+        (when ;ARENA FIGHT 2
+            (and
+                (task-node-open? (game-task-node arena-fight-2-fight))
+                (!= enemy-noto notoriety-level)
+            )
+            (set! enemy-noto (+ notoriety-level 3))
+        )
+        (when ;ARENA FIGHT 3
+            (and
+                (task-node-open? (game-task-node arena-fight-3-fight))
+                (!= enemy-noto (+ notoriety-level 10))
+            )
+            (set! enemy-noto (+ notoriety-level 10))
+        )
+        (when ;DESERT
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'desert)
+                (!= enemy-noto 1)
+                (= start-was-uprising #f)
+            )
+            (when (>= notoriety-level 5)
+                (set! enemy-noto (- notoriety-level 3))
+                (set! start-was-uprising #t)
+                (set! wasi 0)
+            )
+            (when (< notoriety-level 5)
+                (set! enemy-noto 1)
+            )
+        )
+
+        (when 
+        (and 
+            (= start-was-uprising #t)
+            (= (-> (level-get-target-inside *level*) name) 'desert)
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+        )
+            (+! wasi 1)
+            (when (= wasi 3000)
+                (+! enemy-noto 1)
+                (set! wasi 0)
+            )
+        )
+
+        (when 
+            (and
+                (!= (-> (level-get-target-inside *level*) name) 'desert)
+                (= start-was-uprising #t)
+            )
+                (set! wasi 0)
+                (set! start-was-uprising #f)
+            )
+
+
+    (when 
+        (and 
+            (= xp-draw #t)
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+        ) ;gain XP
+        (+! xpi 1)
+        (when (= xpi 45)
+            (set! xpi 0)
+            (set! xp-draw #f)
+        )
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "~s~%<COLOR_CYAN>+~d"
+        xp-string
+        (the int *xp-gain*)
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 30 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+
+    (when (= draw-levelup-noto #t) ;Level Up
+        (+! lvli 1)
+        (when (= lvli 600)
+            (set! lvli 0)
+            (set! draw-levelup-noto #f)
+        )
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_GREEN>LEVEL UP!~%<COLOR_ORANGE>Notoriety Level ~d"
+        (-> *game-info* total-trys)
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 150 250 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+
+    (when ;draw the notoriety level onscreen
+    (and
+        *target*
+        (not *scene-player*)
+        (= (paused?) #f)
+        (= (pause-allowed?) #t)
+    )
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Notoriety: ~d~%<COLOR_YELLOW>~d/~d"
+        notoriety-level
+        (the int (-> *game-info* karma))
+        (the int (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level))
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 1 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (none)
+)

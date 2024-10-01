@@ -7,6 +7,9 @@
 
 (define-extern menu-respond-to-pause (function symbol))
 (define-extern anim-tester-add-object (function string none))
+(defun-extern runs-jak3-every-frame (none))
+(defun-extern stat-tracker! (none))
+(defun-extern update-xp! (none))
 
 ;; DECOMP BEGINS
 
@@ -1434,6 +1437,10 @@
     (if (-> *level* loading-level)
         (load-continue (-> *level* loading-level))
         )
+
+        (runs-jak3-every-frame)
+        (stat-tracker!)
+        (update-xp!)
 
     ; ;; modify vertices for merc face animation. I believe this is somewhat racing DMA of merc data to VU1.
     (with-profiler 'merc *profile-merc-color*

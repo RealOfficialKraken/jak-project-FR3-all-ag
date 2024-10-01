@@ -7,6 +7,8 @@
 
 ;; DECOMP BEGINS
 
+(defun-extern enemy-killed? float none)
+
 (defmethod copy-enemy-info! ((this enemy-info) (arg0 enemy-info))
   (mem-copy! (&-> this type) (&-> arg0 type) 420)
   0
@@ -1033,8 +1035,8 @@
       )
   (set! (-> this water-max-height) 8192.0)
   (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
-      (set! (-> this hit-points) (* 2.0 (-> this enemy-info default-hit-points)))
-      (set! (-> this hit-points) (-> this enemy-info default-hit-points))
+      (set! (-> this hit-points) (+ (* 2.0 (-> this enemy-info default-hit-points)) (the float notoriety-level)))
+      (set! (-> this hit-points) (+ (-> this enemy-info default-hit-points) (the float notoriety-level)))
       )
   (let* ((v1-37 *game-info*)
          (a0-10 (+ (-> v1-37 attack-id) 1))
@@ -1910,6 +1912,11 @@
          )
      )
     ((= msg 'death-start)
+     (#when PC_PORT
+      (when (and 
+              (zero? (-> this hit-points))
+            )
+        (enemy-killed? (rand-vu-float-range 15.0 50.0))))
      (set! (-> this enemy-flags) (the-as enemy-flag (logior (enemy-flag death-start) (-> this enemy-flags))))
      (send-event (ppointer->process (-> this parent)) 'child-die)
      (when (< (-> *event-queue* length) (-> *event-queue* allocated-length))
