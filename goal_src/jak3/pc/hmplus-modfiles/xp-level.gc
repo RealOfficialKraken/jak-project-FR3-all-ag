@@ -13,12 +13,27 @@
     )
     |#
 
+    (define draw-levelup-int 0)
+
 (defun level-up! ((arg0 int))
     (+! (-> *game-info* total-trys) arg0)
     (set! (-> *game-info* karma) extra-offthetop)
     (set! draw-levelup-noto #t)
+    (set! noto-string "<COLOR_ORANGE>Notoriety<COLOR_YELLOW>")
+    (set! draw-levelup-int arg0)
     (none)
 )
+
+(defun level-up-guns! ((arg0 int))
+    (+! (-> *game-info* auto-save-count) arg0)
+    (set! (-> *game-info* buzzer-total) extra-offthetop)
+    (set! draw-levelup-noto #t)
+    (set! noto-string "<COLOR_RED>Guns<COLOR_YELLOW>")
+    (set! draw-levelup-int arg0)
+    (none)
+)
+
+
 
 (defun enemy-killed? ((xp-gain float))
     (+! (-> *game-info* karma) (* xp-gain enemy-noto))
@@ -30,11 +45,16 @@
 )
 
 (defun update-xp! ()
+
+    (when 
+        (!= guns-level (-> *game-info* auto-save-count))
+            (set! guns-level (-> *game-info* auto-save-count))
+        )
     (when ;bind total-trys and notoriety-level together as a game-save stat
         (!= notoriety-level (-> *game-info* total-trys))
             (set! notoriety-level (-> *game-info* total-trys))
     )
-    (when ;level up parameters
+    (when ;level up parameters NOTO
         (and
             (>= (-> *game-info* karma) (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level))
             *target*
@@ -46,6 +66,20 @@
         )
             (set! extra-offthetop (- (-> *game-info* karma) (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level)))
             (level-up! 1)
+        )
+
+        (when ;level up parameters GUNS
+        (and
+            (>= (-> *game-info* buzzer-total) (* (+ (* guns-level 120) (* guns-level 200)) guns-level))
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (!= (-> *game-info* buzzer-total) 0.0)
+            (!= guns-level 0)
+        )
+            (set! extra-offthetop (- (-> *game-info* buzzer-total) (* (+ (* guns-level 120) (* guns-level 200)) guns-level)))
+            (level-up-guns! 1)
         )
 
 
@@ -89,17 +123,45 @@
         (when ;DESERT
             (and
                 (= (-> (level-get-target-inside *level*) name) 'desert)
-                (!= enemy-noto 1)
+                (!= enemy-noto notoriety-level)
                 (= start-was-uprising #f)
             )
-            (when (>= notoriety-level 5)
-                (set! enemy-noto (- notoriety-level 3))
+            (when (>= notoriety-level 3)
+                (set! enemy-noto (- notoriety-level 2))
                 (set! start-was-uprising #t)
                 (set! wasi 0)
             )
-            (when (< notoriety-level 5)
-                (set! enemy-noto 1)
+            (when (< notoriety-level 3)
+                (set! enemy-noto notoriety-level)
             )
+        )
+        (when ;VOLCANOA
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'volcanoa)
+                (!= enemy-noto 8)
+            )
+            (set! enemy-noto 8)
+        )
+        (when ;VOLCANOB
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'volcanob)
+                (!= enemy-noto 9)
+            )
+            (set! enemy-noto 9)
+        )
+        (when ;TEMPLEA
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'templea)
+                (!= enemy-noto 11)
+            )
+            (set! enemy-noto 11)
+        )
+        (when ;TEMPLEB
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'templeb)
+                (!= enemy-noto 19)
+            )
+            (set! enemy-noto 19)
         )
 
         (when 
@@ -161,18 +223,77 @@
             (set! lvli 0)
             (set! draw-levelup-noto #f)
         )
-        (clear matt-str)
-        (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_GREEN>LEVEL UP!~%<COLOR_ORANGE>Notoriety Level ~d"
-        (-> *game-info* total-trys)
+        (when 
+            (and
+                *target*
+                (not *scene-player*)
+                (= (paused?) #f)
+                (= (pause-allowed?) #t)
+                (= in-menu? #f)
+            )
+            (clear matt-str)
+            (clear *pc-encoded-matt-str*)
+            (format matt-str "<COLOR_GREEN>LEVEL UP!~%~s Level ~d"
+            noto-string
+            draw-levelup-int
+            )
+            (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+            (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+            (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+            (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 150 0.0 (font-color default) (font-flags middle shadow kerning large))))
+            (set! (-> font-ctx scale) 0.325)
+            (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
         )
-        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 150 250 0.0 (font-color default) (font-flags middle shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )
+    (when
+        (and
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (cpad-pressed? 0 l3)
+            (= r3-noto #f)
+        )
+        (set! r3-noto #t)
+        (set! anim-noto -20)
+        (set! notoi 0)
+    )
+
+    (when
+        (and
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (cpad-pressed? 0 l3)
+            (= r3-noto #t)
+            (> notoi 22)
+        )
+        (set! notoi 22)
+        (set! anim-noto 1)
+    )
+
+    (when
+        (and
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (= r3-noto #t)
+        )
+            (+! notoi 1)
+            (when (and (>= notoi 1)(<= notoi 21))
+                (+! anim-noto 1)
+            )
+            (when (>= notoi 159)
+                (-! anim-noto 1)
+            )
+            (when (= notoi 182)
+                (set! notoi 0)
+                (set! anim-noto -20)
+                (set! r3-noto #f)
+            )
+        )
 
     (when ;draw the notoriety level onscreen
     (and
@@ -180,18 +301,22 @@
         (not *scene-player*)
         (= (paused?) #f)
         (= (pause-allowed?) #t)
+        (= r3-noto #t)
     )
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Notoriety: ~d~%<COLOR_YELLOW>~d/~d"
+        (format matt-str "<COLOR_ORANGE>Notoriety: ~d        <COLOR_RED>Guns: ~d~%<COLOR_YELLOW>~d/~d        ~d/~d"
         notoriety-level
+        guns-level
         (the int (-> *game-info* karma))
         (the int (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level))
+        (the int (-> *game-info* buzzer-total))
+        (the int (* (+ (* guns-level 120) (* guns-level 200)) guns-level))
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 1 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 anim-noto 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )

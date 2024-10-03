@@ -1085,7 +1085,7 @@
               )
             )
            ((= a0-25 1)
-            (when (and (>= (-> this turbo-supply) 1.0)
+            (when (and (>= (-> this turbo-supply) 0.0)
                        (< (-> this path-deviation) 1.0)
                        (>= (-> this race racer-state speed-factor) (-> this race state info ai-max-speed-factor))
                        )

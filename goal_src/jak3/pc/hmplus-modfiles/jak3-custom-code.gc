@@ -312,9 +312,11 @@ Bad modifiers:
 (= in-skill? #f)
 (= menu-select 0)
 )
+#|
 (set! in-modifiers? #t)
 (set! menu-slot 0)
 (set! sq-string "Roll the modifier!")
+|#
 )
 (when 
 (and 
@@ -744,7 +746,7 @@ Bad modifiers:
     (= menu-select 0)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_GREEN>(<)~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_GREEN>(<) <COLOR_RED>(LOCKED)~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -757,7 +759,7 @@ Bad modifiers:
     (= menu-select 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_WHITE>(<)~%<COLOR_BLUE>Gun Mods <COLOR_GREEN>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_WHITE>(<) <COLOR_RED>(LOCKED)~%<COLOR_BLUE>Gun Mods <COLOR_GREEN>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -770,7 +772,7 @@ Bad modifiers:
     (= menu-select 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_WHITE>(<)~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_GREEN>(<)"
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_RED>Modifiers <COLOR_WHITE>(<) <COLOR_RED>(LOCKED)~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_GREEN>(<)"
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -984,7 +986,7 @@ Bad modifiers:
     (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_YELLOW>Guns: ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete and pick up ammo to earn XP in this area."
+        (format matt-str "<COLOR_YELLOW>Guns: ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete ammo to earn XP in this area."
         guns-level
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
