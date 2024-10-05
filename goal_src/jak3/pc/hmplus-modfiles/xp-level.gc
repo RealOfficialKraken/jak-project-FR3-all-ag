@@ -20,7 +20,7 @@
     (set! (-> *game-info* karma) extra-offthetop)
     (set! draw-levelup-noto #t)
     (set! noto-string "<COLOR_ORANGE>Notoriety<COLOR_YELLOW>")
-    (set! draw-levelup-int arg0)
+    (set! draw-levelup-int notoriety-level)
     (none)
 )
 
@@ -29,11 +29,27 @@
     (set! (-> *game-info* buzzer-total) extra-offthetop)
     (set! draw-levelup-noto #t)
     (set! noto-string "<COLOR_RED>Guns<COLOR_YELLOW>")
-    (set! draw-levelup-int arg0)
+    (set! draw-levelup-int (-> *game-info* auto-save-count))
     (none)
 )
 
+(defun level-up-cars! ((arg0 int))
+    (+! (-> *game-info* total-deaths) arg0)
+    (set! (-> *game-info* fuel) extra-offthetop)
+    (set! draw-levelup-noto #t)
+    (set! noto-string "<COLOR_PINK>Vehicle<COLOR_YELLOW>")
+    (set! draw-levelup-int (-> *game-info* total-deaths))
+    (none)
+)
 
+(defun vehicle-killed? ((xp-gain float))
+    (+! (-> *game-info* fuel) (* xp-gain enemy-noto))
+    (set! xp-string "Marauder Killed")
+    (set! *xp-gain* (* xp-gain enemy-noto))
+    (set! xp-draw #t)
+    (set! xpi 0)
+    (none)
+)
 
 (defun enemy-killed? ((xp-gain float))
     (+! (-> *game-info* karma) (* xp-gain enemy-noto))
@@ -47,12 +63,18 @@
 (defun update-xp! ()
 
     (when 
+        (!= notoriety-level (-> *game-info* total-trys))
+            (set! notoriety-level (-> *game-info* total-trys))
+    )
+    (when ;bind total-trys and notoriety-level together as a game-save stat
         (!= guns-level (-> *game-info* auto-save-count))
             (set! guns-level (-> *game-info* auto-save-count))
         )
-    (when ;bind total-trys and notoriety-level together as a game-save stat
-        (!= notoriety-level (-> *game-info* total-trys))
-            (set! notoriety-level (-> *game-info* total-trys))
+    (when (and
+            (!= cars-level (-> *game-info* total-deaths))
+            (!= (-> *game-info* total-deaths) 0)
+        )
+            (set! cars-level (-> *game-info* total-deaths))
     )
     (when ;level up parameters NOTO
         (and
@@ -80,6 +102,20 @@
         )
             (set! extra-offthetop (- (-> *game-info* buzzer-total) (* (+ (* guns-level 120) (* guns-level 200)) guns-level)))
             (level-up-guns! 1)
+        )
+
+        (when ;level up parameters CARS
+        (and
+            (>= (-> *game-info* fuel) (* (+ (* cars-level 30) (* cars-level 175)) cars-level))
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (!= (-> *game-info* fuel) 0.0)
+            (!= guns-level 0)
+        )
+            (set! extra-offthetop (- (-> *game-info* fuel) (* (+ (* cars-level 30) (* cars-level 175)) cars-level)))
+            (level-up-cars! 1)
         )
 
 
@@ -159,9 +195,95 @@
         (when ;TEMPLEB
             (and
                 (= (-> (level-get-target-inside *level*) name) 'templeb)
+                (!= enemy-noto 14)
+            )
+            (set! enemy-noto 14)
+        )
+        (when ;MINE
+            (and
+                (or 
+                    (= (-> (level-get-target-inside *level*) name) 'minea)
+                    (= (-> (level-get-target-inside *level*) name) 'mineb)
+                    (= (-> (level-get-target-inside *level*) name) 'minec)
+                )
+                (and
+                    (!= enemy-noto 15)
+                    (!= enemy-noto 16)
+                    (!= enemy-noto 17)
+                    (!= enemy-noto 18)
+                )
+            )
+            (set! enemy-noto (rand-vu-int-range 15 18))
+        )
+        (when ;CTYGENB
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'ctygenb)
+                (!= enemy-noto 17)
+            )
+            (set! enemy-noto 17)
+        )
+        (when ;SEW1
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'sewa)
+                (!= enemy-noto 18)
                 (!= enemy-noto 19)
             )
-            (set! enemy-noto 19)
+            (set! enemy-noto (rand-vu-int-range 18 19))
+        )
+        (when ;ctyport
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'ctyport)
+                (!= enemy-noto 19)
+                (!= enemy-noto 20)
+            )
+            (set! enemy-noto (rand-vu-int-range 19 20))
+        )
+        (when ;ctyinda
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'ctyinda)
+                (!= enemy-noto 21)
+                (!= enemy-noto 22)
+            )
+            (set! enemy-noto (rand-vu-int-range 21 22))
+        )
+        (when ;ctyindb
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'ctyindb)
+                (!= enemy-noto 35)
+                (!= enemy-noto 36)
+                (!= enemy-noto 37)
+                (!= enemy-noto 38)
+                (!= enemy-noto 39)
+                (!= enemy-noto 40)
+            )
+            (set! enemy-noto (rand-vu-int-range 35 40))
+        )
+        (when ;ctysluma
+            (and
+                (= (-> (level-get-target-inside *level*) name) 'ctysluma)
+                (!= enemy-noto 45)
+                (!= enemy-noto 46)
+                (!= enemy-noto 47)
+                (!= enemy-noto 48)
+                (!= enemy-noto 49)
+                (!= enemy-noto 50)
+            )
+            (set! enemy-noto (rand-vu-int-range 45 50))
+        )
+        (when ;mhcitya+mhcityb
+            (and
+                (or
+                    (= (-> (level-get-target-inside *level*) name) 'mhcitya)
+                    (= (-> (level-get-target-inside *level*) name) 'mhcityb)
+                )
+                (!= enemy-noto 70)
+                (!= enemy-noto 71)
+                (!= enemy-noto 72)
+                (!= enemy-noto 73)
+                (!= enemy-noto 74)
+                (!= enemy-noto 75)
+            )
+            (set! enemy-noto (rand-vu-int-range 70 75))
         )
 
         (when 
@@ -233,7 +355,7 @@
             )
             (clear matt-str)
             (clear *pc-encoded-matt-str*)
-            (format matt-str "<COLOR_GREEN>LEVEL UP!~%~s Level ~d"
+            (format matt-str "<COLOR_GREEN>LEVEL UP!~%~%~s Level ~d"
             noto-string
             draw-levelup-int
             )
@@ -305,18 +427,60 @@
     )
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Notoriety: ~d        <COLOR_RED>Guns: ~d~%<COLOR_YELLOW>~d/~d        ~d/~d"
+        (format matt-str "<COLOR_ORANGE>Notoriety: ~d~%<COLOR_YELLOW>~d/~d"
         notoriety-level
-        guns-level
         (the int (-> *game-info* karma))
         (the int (* (+ (* notoriety-level 60) (* notoriety-level 100)) notoriety-level))
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 anim-noto 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when ;draw the guns level onscreen
+    (and
+        *target*
+        (not *scene-player*)
+        (= (paused?) #f)
+        (= (pause-allowed?) #t)
+        (= r3-noto #t)
+    )
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>Guns: ~d~%<COLOR_RED>~d/~d"
+        guns-level
         (the int (-> *game-info* buzzer-total))
         (the int (* (+ (* guns-level 120) (* guns-level 200)) guns-level))
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 anim-noto 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 185 anim-noto 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when ;draw the cars level onscreen
+    (and
+        *target*
+        (not *scene-player*)
+        (= (paused?) #f)
+        (= (pause-allowed?) #t)
+        (= r3-noto #t)
+        (!= (-> *game-info* total-deaths) 0)
+    )
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_PINK>Vehicles: ~d~%<COLOR_PINK>~d/~d"
+        cars-level
+        (the int (-> *game-info* fuel))
+        (the int (* (+ (* cars-level 30) (* cars-level 175)) cars-level))
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 315 anim-noto 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )

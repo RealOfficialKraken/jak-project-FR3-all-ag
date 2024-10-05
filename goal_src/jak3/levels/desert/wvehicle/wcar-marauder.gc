@@ -5,6 +5,8 @@
 ;; name in dgo: wcar-marauder
 ;; dgos: LPATK, LFACCAR, WASALL
 
+(defun-extern vehicle-killed? float none)
+
 (deftype wcar-marauder-stack-var0 (structure)
   ((time0 uint32 :offset 0)
    (float0 float :offset 16)
@@ -488,6 +490,7 @@
   :virtual #t
   :enter (behavior ()
     (+! (-> *game-info* marauders-killed) 1.0)
+    (vehicle-killed? (rand-vu-float-range 2.0 7.0))
     (if (and *target* (focus-test? *target* pilot-riding))
         (turbo-pickup-spawn (-> self root trans))
         )

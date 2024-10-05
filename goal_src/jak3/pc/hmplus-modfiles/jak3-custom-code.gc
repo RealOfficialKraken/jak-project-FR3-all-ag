@@ -25,6 +25,9 @@ Bad modifiers:
 
 
 |#
+(defun-extern level-up! int none)
+(defun-extern level-up-guns! int none)
+(defun-extern level-up-cars! int none)
 
 (define menu-unlocked? #f)
 
@@ -207,7 +210,7 @@ Bad modifiers:
 (set! menu-slot 0)
 (set! menu-type 0)
 (when (= (-> *game-info* total-deaths) 0)
-    (set! (-> *game-info* total-deaths) 1)
+    (level-up-cars! 1)
 )
 )
 
@@ -528,7 +531,7 @@ Bad modifiers:
         (cpad-pressed? 0 down)
         )
     (+! menu-slot 1)
-    (when (> menu-slot 3)
+    (when (> menu-slot 2)
         (set! menu-slot 0)
     )
     )
@@ -540,7 +543,7 @@ Bad modifiers:
         )
     (-! menu-slot 1)
     (when (< menu-slot 0)
-        (set! menu-slot 3)
+        (set! menu-slot 2)
     )
     )
 )
@@ -880,9 +883,8 @@ Bad modifiers:
     (= menu-slot 0)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_GREEN>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level ~d <COLOR_GREEN>(<)~%<COLOR_RED>Guns ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco ~d <COLOR_WHITE>(<)"
         notoriety-level
-        melee-level
         guns-level
         eco-level
         )
@@ -897,9 +899,8 @@ Bad modifiers:
     (= menu-slot 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_WHITE>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_GREEN>(<)~%<COLOR_RED>Guns = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns ~d <COLOR_GREEN>(<)~%<COLOR_RED>Eco ~d <COLOR_WHITE>(<)"
         notoriety-level
-        melee-level
         guns-level
         eco-level
         )
@@ -914,26 +915,8 @@ Bad modifiers:
     (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_WHITE>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns = ~d <COLOR_GREEN>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco ~d <COLOR_GREEN>(<)"
         notoriety-level
-        melee-level
-        guns-level
-        eco-level
-        )
-        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-    )
-    (when
-    (= menu-slot 3)
-        (clear matt-str)
-        (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>All Skills:~%~%<COLOR_RED>Notoriety Level = ~d <COLOR_WHITE>(<)~%~%<COLOR_RED>Melee = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Guns = ~d <COLOR_WHITE>(<)~%<COLOR_RED>Eco Channeling = ~d <COLOR_GREEN>(<)"
-        notoriety-level
-        melee-level
         guns-level
         eco-level
         )
@@ -972,20 +955,6 @@ Bad modifiers:
     (= menu-slot 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_RED>Melee: ~d ~%~%<COLOR_ORANGE>Punching and Twirling from Jak's Melee will become faster as this levels up.~%~%<COLOR_YELLOW>Hitting <COLOR_WHITE>any<COLOR_RED> Enemies<COLOR_YELLOW> with Melee Attacks will earn XP in this area."
-        melee-level
-        )
-        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-    )
-    (when
-    (= menu-slot 2)
-        (clear matt-str)
-        (clear *pc-encoded-matt-str*)
         (format matt-str "<COLOR_YELLOW>Guns: ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete ammo to earn XP in this area."
         guns-level
         )
@@ -997,7 +966,7 @@ Bad modifiers:
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )
     (when
-    (= menu-slot 3)
+    (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
         (format matt-str "<COLOR_RED>Eco Channeling: ~d ~%~%<COLOR_ORANGE>Jak's eco channeling abilities can cost less, and also replenish itself in certain circumstances.~%~%<COLOR_YELLOW>Use Dark or Light abilities to earn XP in this area."

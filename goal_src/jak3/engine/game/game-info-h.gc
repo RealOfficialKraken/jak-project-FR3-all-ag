@@ -21,7 +21,7 @@
   (define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
 
   (define notoriety-level 0)
-  (define melee-level 0)
+  (define cars-level 0)
   (define guns-level 0)
   (define eco-level 0)
 
@@ -32,6 +32,9 @@
   (define sq-string "")
   (define noto-string "")
   (define r3-noto #f)
+  (define r3-guns #f)
+  (define r3-cars #f)
+  (define fuel-alternative 0.0)
   (define notoi 0)
   (define anim-noto 0)
   (define max-modg 5)

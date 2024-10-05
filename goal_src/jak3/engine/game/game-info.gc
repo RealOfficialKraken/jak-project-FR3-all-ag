@@ -501,7 +501,7 @@
        #f
        )
      (set! mode 'game)
-     (set! (-> this auto-save-count) 0)
+     (set! (-> this auto-save-count) 1)
      (set! (-> *setting-control* user-default auto-save) #f)
      (set! (-> this money) 0.0)
      (set! (-> this money-total) 0.0)
@@ -809,7 +809,7 @@
            (task-resolution-close! (the-as game-task s5-1))
            )
          )
-       (-> this fuel)
+       fuel-alternative
        )
       (('buzzer)
        (logand (the int arg1) #xffff)

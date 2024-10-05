@@ -1474,7 +1474,7 @@
         )
   (sound-params-set! *gui-control* (-> this explode-sound) #t 50 150 11 -1.0)
   (set! (-> this start-pilot?) (the-as symbol (and *target* (focus-test? *target* pilot))))
-  (set! (-> this damage) (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0))
+  (set! (-> this damage) (+ (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0) (/ notoriety-level 1.2)))
   (set! (-> this vehicle-damage-factor) 1.0)
   (set! (-> this vehicle-impulse-factor) 2.0)
   (when (logtest? (game-secrets gun-upgrade-dark-1) (-> *game-info* secrets))
